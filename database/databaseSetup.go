@@ -10,6 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+var Client *mongo.Client = DBSet()
+
 func DBSet() *mongo.Client {
 	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:8080"))
 	if err != nil {
