@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"time"
 
@@ -23,6 +24,14 @@ func DBSet() *mongo.Client {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	err = client.Ping(context.TODO(), nil)
+	if err != nil {
+		log.Println("Failed to connect to mongodb")
+	}
+
+	fmt.Println("Successfully connected to mongodb")
+	return client
 }
 
 func UserData(client *mongo.Client, collectionName string) *mongo.Collection {}
