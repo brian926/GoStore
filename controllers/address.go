@@ -82,6 +82,7 @@ func EditHomeAddress() gin.HandlerFunc {
 
 func EditWorkAddress() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		user_id := c.Query("id")
 
 	}
 }
