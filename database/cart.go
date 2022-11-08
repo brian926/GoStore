@@ -5,6 +5,7 @@ import (
 	"errors"
 	"gostore/models"
 	"log"
+	"time"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -73,6 +74,48 @@ func RemoveCartItem(ctx context.Context, prodCollection, userCollection *mongo.C
 	return nil
 }
 
-func BuyItemFromCart() {}
+func BuyItemFromCart(ctx context.Context, userCollection *mongo.Collection, userID string) error {
+	id, err := primitive.ObjectIDFromHex(userID)
+	if err != nil {
+		log.Println(err)
+		return ErrUserIdIsNotValid
+	}
+
+	var getCartItems models.User
+	var orderCart models.Order
+
+	orderCart.Order_ID = primitive.NewObjectID()
+	orderCart.Ordered_At = time.Now()
+	orderCart.Order_Cart = make([]models.ProductUser, 0)
+	orderCart.Payment_Method.COD = true
+
+	unwind := bson.D{{Key: "$unwind", Value: bson.D{primitive.E{Key: "path", Value: "$userCart"}}}}
+	grouping := bson.D{{Key: "$group", Value: bson.D{primitive.E{Key: "_id", Value: "$_id"}, {Key: "total", Value: bson.D{primitive.E{Key: "$sum", Value: "$userCart.price"}}}}}}
+
+	currentResults, err := userCollection.Aggregate(ctx, mongo.Pipeline{unwind, grouping})
+	ctx.Done()
+	if err != nil {
+		panic(err)
+	}
+
+	var getUserCart []bson.M
+	if err = currentResults.All(ctx, &getUserCart); err != nil {
+		panic(err)
+	}
+
+	var totalPrice int32
+	for _, userItem := range getUserCart {
+		price := userItem["total"]
+		totalPrice = price.(int32)
+	}
+
+	orderCart.Price = int(totalPrice)
+
+	filter := bson.D{primitive.E{Key: "_id", Value: id}}
+	update := bson.D{{Key: "$push", Value: bson.D{primitive.E{Key: "order", Value: orderCart}}}}
+	userCollection.UpdateMany(ctx, filter, update)
+
+	return nil
+}
 
 func InstantBuyer() {}
