@@ -5,7 +5,7 @@ import (
 )
 
 func UserRoutes() {
-	incomingRoutes.POST("/users/signup", controllers.SighUp())
+	incomingRoutes.POST("/users/signup", controllers.SignUp())
 	incomingRoutes.POST("/users/login", controllers.Login())
 	incomingRoutes.POST("/admin/addproduct", controllers.ProductViewerAdmin())
 	incomingRoutes.GET("/users/productview", controllers.SearchProduct())

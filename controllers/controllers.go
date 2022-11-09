@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"gostore/database"
-	"gostore/generate"
 	"gostore/models"
+	token "gostore/tokens"
 	"log"
 	"net/http"
 	"time"
@@ -97,7 +97,7 @@ func Signup() gin.HandlerFunc {
 		user.ID = primitive.NewObjectID()
 		user.User_ID = user.ID.Hex()
 
-		token, refreshToken, _ := generate.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
+		token, refreshToken, _ := token.TokenGenerator(*user.Email, *user.First_Name, *user.Last_Name, user.User_ID)
 		user.Token = &token
 		user.Refresh_Token = &refreshToken
 		user.UserCart = make([]models.ProductUser, 0)
@@ -143,17 +143,19 @@ func Login() gin.HandlerFunc {
 			return
 		}
 
-		token, refreshToken, _ := generate.TokenGenerator(*founduser.Email, *founduser.First_Name, *founduser.Last_Name, founduser.User_ID)
+		curToken, refreshToken, _ := token.TokenGenerator(*founduser.Email, *founduser.First_Name, *founduser.Last_Name, founduser.User_ID)
 		defer cancel()
 
-		generate.UpdateAllToken(token, refreshToken, founduser.User_ID)
+		token.UpdateAllTokens(curToken, refreshToken, founduser.User_ID)
 
 		c.JSON(http.StatusFound, founduser)
 	}
 }
 
 func ProductViewerAdmin() gin.HandlerFunc {
+	return func(c *gin.Context) {
 
+	}
 }
 
 func SearchProduct() gin.HandlerFunc {

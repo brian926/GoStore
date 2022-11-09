@@ -65,7 +65,7 @@ func RemoveCartItem(ctx context.Context, prodCollection, userCollection *mongo.C
 	filter := bson.D{primitive.E{Key: "_id", Value: id}}
 	update := bson.M{"$pull": bson.M{"usercart": bson.M{"_id": productID}}}
 
-	_, err = UpdateMany(ctx, filter, update)
+	_, err = userCollection.UpdateMany(ctx, filter, update)
 	if err != nil {
 		log.Println(err)
 		return ErrCantRemoveItemCart
@@ -113,9 +113,35 @@ func BuyItemFromCart(ctx context.Context, userCollection *mongo.Collection, user
 
 	filter := bson.D{primitive.E{Key: "_id", Value: id}}
 	update := bson.D{{Key: "$push", Value: bson.D{primitive.E{Key: "order", Value: orderCart}}}}
-	userCollection.UpdateMany(ctx, filter, update)
+	_, err = userCollection.UpdateMany(ctx, filter, update)
+	if err != nil {
+		log.Println(err)
+	}
+
+	err = userCollection.FindOne(ctx, bson.D{primitive.E{Key: "_id", Value: id}}).Decode(&getCartItems)
+	if err != nil {
+		log.Println(err)
+	}
+
+	filter2 := bson.D{primitive.E{Key: "_id", Value: id}}
+	update2 := bson.M{"$push": bson.M{"orders.$[].order_list": bson.M{"$each": getCartItems.UserCart}}}
+	_, err = userCollection.UpdateOne(ctx, filter2, update2)
+	if err != nil {
+		log.Println(err)
+	}
+
+	usercartEmpty := make([]models.ProductUser, 0)
+	filter3 := bson.D{primitive.E{Key: "_id", Value: id}}
+	update3 := bson.D{{Key: "$set", Value: bson.D{primitive.E{Key: "usercart", Value: usercartEmpty}}}}
+
+	_, err = userCollection.UpdateOne(ctx, filter3, update3)
+	if err != nil {
+		return ErrCantBuyCartItem
+	}
 
 	return nil
 }
 
-func InstantBuyer() {}
+func InstantBuyer(ctx context.Context, prodCollection, userCollection *mongo.Collection, productID primitive.ObjectID, userQueryID string) error {
+	return nil
+}
