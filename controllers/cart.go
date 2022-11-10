@@ -33,7 +33,7 @@ func (app *Application) AddToCart() gin.HandlerFunc {
 		if productQueryID == "" {
 			log.Println("Product ID is empty")
 
-			_ = c.AbortWithError(http.StatusBadRequest, errors.New("Product ID is empty"))
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("product ID is empty"))
 			return
 		}
 
@@ -41,7 +41,7 @@ func (app *Application) AddToCart() gin.HandlerFunc {
 		if userQueryID == "" {
 			log.Println("User ID is empty")
 
-			_ = c.AbortWithError(http.StatusBadRequest, errors.New("User ID is empty"))
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("user ID is empty"))
 			return
 		}
 
@@ -72,7 +72,7 @@ func (app *Application) RemoveItem() gin.HandlerFunc {
 		if productQueryID == "" {
 			log.Println("Product ID is empty")
 
-			_ = c.AbortWithError(http.StatusBadRequest, errors.New("Product ID is empty"))
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("product ID is empty"))
 			return
 		}
 
@@ -80,7 +80,7 @@ func (app *Application) RemoveItem() gin.HandlerFunc {
 		if userQueryID == "" {
 			log.Println("User ID is empty")
 
-			_ = c.AbortWithError(http.StatusBadRequest, errors.New("User ID is empty"))
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("user ID is empty"))
 			return
 		}
 
@@ -176,7 +176,7 @@ func (app *Application) InstantBuy() gin.HandlerFunc {
 		if productQueryID == "" {
 			log.Println("Product ID is empty")
 
-			_ = c.AbortWithError(http.StatusBadRequest, errors.New("Product ID is empty"))
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("product ID is empty"))
 			return
 		}
 
@@ -184,7 +184,7 @@ func (app *Application) InstantBuy() gin.HandlerFunc {
 		if userQueryID == "" {
 			log.Println("User ID is empty")
 
-			_ = c.AbortWithError(http.StatusBadRequest, errors.New("User ID is empty"))
+			_ = c.AbortWithError(http.StatusBadRequest, errors.New("user ID is empty"))
 			return
 		}
 
