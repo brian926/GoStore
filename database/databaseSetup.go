@@ -10,10 +10,8 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var Client *mongo.Client = DBSet()
-
 func DBSet() *mongo.Client {
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:8080"))
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://development:testpassword@localhost:27017"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -30,11 +28,14 @@ func DBSet() *mongo.Client {
 	err = client.Ping(context.TODO(), nil)
 	if err != nil {
 		log.Println("Failed to connect to mongodb")
+		return nil
 	}
 
 	fmt.Println("Successfully connected to mongodb")
 	return client
 }
+
+var Client *mongo.Client = DBSet()
 
 func UserData(client *mongo.Client, collectionName string) *mongo.Collection {
 	var collection *mongo.Collection = client.Database("Ecommerce").Collection(collectionName)

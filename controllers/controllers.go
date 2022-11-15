@@ -110,7 +110,7 @@ func Signup() gin.HandlerFunc {
 		}
 		defer cancel()
 
-		c.JSON(http.StatusCreated, "Successfully signed in")
+		c.JSON(http.StatusCreated, "Successfully created in")
 	}
 }
 
